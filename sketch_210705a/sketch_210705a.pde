@@ -1,8 +1,8 @@
-import processing.serial.*; // imports library for serial communication
-import java.awt.event.KeyEvent; // imports library for reading the data from the serial port
+import processing.serial.*; // Importar biblioteca para la comunicacion con el Serial
+import java.awt.event.KeyEvent; // importar libreria para recibir la informacion recibida por el puerto serie
 import java.io.IOException;
-Serial myPort; // defines Object Serial
-// defubes variables
+Serial myPort; // definiendo objeto serie
+// definiendo variables
 String angle="";
 String distance="";
 String data="";
@@ -15,47 +15,47 @@ PFont orcFont;
 void setup() {
 size (1920, 1080);
 smooth();
-myPort = new Serial(this,"COM3", 9600); // starts the serial communication
-myPort.bufferUntil('.'); // reads the data from the serial port up to the character '.'. So actually it reads this: angle,distance.
-orcFont = loadFont("TheSans-Plain-12.vlw");
+myPort = new Serial(this,"COM3", 9600); // comienza la comunicacion con el puerto serie
+myPort.bufferUntil('.'); // lee los datos desde el puerto serie hasta el carácter '.'. Lee ángulo y distancia.
+orcFont = loadFont("TheSans-Plain-12.vlw"); // Es importante que el archivo .vlw esté en el mismo directorio del proyecto
 }
 void draw() {
 fill(98,245,31);
 textFont(orcFont);
-// simulating motion blur and slow fade of the moving line
+// simulando el movimiento y el desvanecimiento lento de la línea en movimiento
 noStroke();
 fill(0,4);
 rect(0, 0, width, 1010);
-fill(98,245,31); // green color
-// calls the functions for drawing the radar
+fill(98,245,31); // color verde
+// Llamando a las funciones creadas para mostrar el radar
 drawRadar();
 drawLine();
 drawObject();
 drawText();
 }
-void serialEvent (Serial myPort) { // starts reading data from the Serial Port
-// reads the data from the Serial Port up to the character '.' and puts it into the String variable "data".
+void serialEvent (Serial myPort) { // comienza a leer la informacion del puerto serie
+// lee los datos desde el puerto serie hasta el carácter '.' y lo coloca en la variable String "datos".
 data = myPort.readStringUntil('.');
 data = data.substring(0,data.length()-1);
-index1 = data.indexOf(","); // find the character ',' and puts it into the variable "index1"
-angle= data.substring(0, index1); // read the data from position "0" to position of the variable index1 or thats the value of the angle the Arduino Board sent into the Serial Port
-distance= data.substring(index1+1, data.length()); // read the data from position "index1" to the end of the data pr thats the value of the distance
-// converts the String variables into Integer
+index1 = data.indexOf(","); // busca el carácter ',' y lo coloca en la variable "index1"
+angle= data.substring(0, index1); // lee los datos desde la posición "0" hasta la posición de la variable index1 o ese es el valor del ángulo que la placa Arduino envió al puerto serie
+distance= data.substring(index1+1, data.length()); // lee los datos desde la posición "index1" hasta el final de los datos pr ese es el valor de la distancia
+// Convierte la variable String en un Integer
 iAngle = int(angle);
 iDistance = int(distance);
 }
 void drawRadar() {
 pushMatrix();
-translate(960,1000); // moves the starting coordinats to new location
+translate(960,1000); // mueve las coordenadas iniciales a una nueva ubicación
 noFill();
 strokeWeight(2);
 stroke(98,245,31);
-// draws the arc lines
+// dibuja las líneas del arco
 arc(0,0,1800,1800,PI,TWO_PI);
 arc(0,0,1400,1400,PI,TWO_PI);
 arc(0,0,1000,1000,PI,TWO_PI);
 arc(0,0,600,600,PI,TWO_PI);
-// draws the angle lines
+// dibuja las lineas de ángulo
 line(-960,0,960,0);
 line(0,0,-960*cos(radians(30)),-960*sin(radians(30)));
 line(0,0,-960*cos(radians(60)),-960*sin(radians(60)));
@@ -67,13 +67,13 @@ popMatrix();
 }
 void drawObject() {
 pushMatrix();
-translate(960,1000); // moves the starting coordinats to new location
+translate(960,1000); // mueve las coordenadas iniciales a una nueva ubicación
 strokeWeight(9);
 stroke(255,10,10); // red color
-pixsDistance = iDistance*22.5; // covers the distance from the sensor from cm to pixels
-// limiting the range to 40 cms
+pixsDistance = iDistance*22.5; // convierte la distancia desde el sensor de cm a píxeles
+// El rango limite es 40cm
 if(iDistance<40){
-// draws the object according to the angle and the distance
+//dibuja el objeto según el ángulo y la distancia
 line(pixsDistance*cos(radians(iAngle)),-pixsDistance*sin(radians(iAngle)),950*cos(radians(iAngle)),-950*sin(radians(iAngle)));
 }
 popMatrix();
@@ -82,11 +82,11 @@ void drawLine() {
 pushMatrix();
 strokeWeight(9);
 stroke(30,250,60);
-translate(960,1000); // moves the starting coordinats to new location
-line(0,0,950*cos(radians(iAngle)),-950*sin(radians(iAngle))); // draws the line according to the angle
+translate(960,1000); // mueve las coordenadas iniciales a una nueva ubicación
+line(0,0,950*cos(radians(iAngle)),-950*sin(radians(iAngle))); // dibuja las lineas de acuerdo al ángulo
 popMatrix();
 }
-void drawText() { // draws the texts on the screen
+void drawText() { // Dibuja el texto en pantalla
 pushMatrix();
 if(iDistance>40) {
 noObject = "Out of Range";
